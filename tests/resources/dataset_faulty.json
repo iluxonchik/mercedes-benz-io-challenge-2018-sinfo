@@ -21,10 +21,7 @@
 						"monday": [
 							"1000",
 							"1030"
-						]
-					}
 				},
-				{
 					"id": "d5d0aabc-c0de-4f38-badc-759f96f5fca3",
 					"model": "AMG",
 					"fuel": "ELECTRIC",
@@ -62,7 +59,6 @@
 			"id": "bbcdbbad-5d0b-45ef-90ac-3581b997e063",
 			"name": "MB Lisboa",
 			"latitude": 38.746721,
-			"longitude": -9.229837,
 			"closed": [
 				"sunday",
 				"monday"
@@ -78,15 +74,12 @@
 							"1030"
 						],
 						"wednesday": [
-							"1000",
-							"1030"
 						]
 					}
 				},
 				{
 					"id": "893d97bf-5a9d-4926-ace3-39ad0585c912",
 					"model": "AMG",
-					"fuel": "ELECTRIC",
 					"transmission": "AUTO",
 					"availability": {
 						"tuesday": [
@@ -104,7 +97,6 @@
 					"model": "E",
 					"fuel": "GASOLINE",
 					"transmission": "MANUAL",
-					"availability": {
 						"tuesday": [
 							"1000",
 							"1030"
@@ -129,7 +121,6 @@
 							"1000",
 							"1030"
 						]
-					}
 				}
 			]
 		},
@@ -146,7 +137,6 @@
 					"id": "f0bd3390-58ae-4510-987e-a5bfe14973ff",
 					"model": "AMG",
 					"fuel": "ELECTRIC",
-					"transmission": "AUTO",
 					"availability": {
 						"tuesday": [
 							"1000",
