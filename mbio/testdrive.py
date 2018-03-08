@@ -8,13 +8,27 @@ class TestDrive(object):
         self._dataset_path = dataset
         self._dataset = self._load_dataset(self._dataset_path)
 
-    def get_vehicles_by_model(self, model):
-        res = []
+    @property
+    def all_vehicles(self):
+        """
+        Iterator over the list of all vehicles in the dataset.
+        """
         for dealer in self._dataset['dealers']:
             for vehicle in dealer['vehicles']:
-                if vehicle['model'].lower() == model.lower():
-                    res += [vehicle]
+                yield vehicle
+
+    def get_vehicles_by_model(self, model):
+        """
+        Returns a list of vehicles with the specified model.
+        """
+        res = []
+        for vehicle in self.all_vehicles:
+            if vehicle['model'].lower() == model.lower():
+                res += [vehicle]
         return res
+
+    def get_vehicles_by_fuel_type(self, fuel):
+        return []
 
     def _load_dataset(self, path):
 
