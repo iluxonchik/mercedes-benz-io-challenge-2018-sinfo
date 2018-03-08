@@ -8,44 +8,33 @@ class TestDrive(object):
         self._dataset_path = dataset
         self._dataset = self._load_dataset(self._dataset_path)
 
-    @property
-    def all_vehicles(self):
-        """
-        Iterator over the list of all vehicles in the dataset.
-        """
-        for dealer in self._dataset['dealers']:
-            for vehicle in dealer['vehicles']:
-                yield vehicle
-
     def get_vehicles_by_model(self, model):
         """
         Returns a list of vehicles with the specified model.
         """
-        res = []
-        for vehicle in self.all_vehicles:
-            if vehicle['model'].lower() == model.lower():
-                res += [vehicle]
-        return res
+        return self._filter_vehicles_by_property_value('model', model)
 
     def get_vehicles_by_fuel_type(self, fuel):
-        res = []
-        for vehicle in self.all_vehicles:
-            if vehicle['fuel'].lower() == fuel.lower():
-                res += [vehicle]
-        return res
+        return self._filter_vehicles_by_property_value('fuel', fuel)
 
     def get_vehicles_by_transmission(self, transmission):
-        res = []
-        for vehicle in self.all_vehicles:
-            if vehicle['transmission'].lower() == transmission.lower():
-                res += [vehicle]
-        return res
+        return self._filter_vehicles_by_property_value('transmission',
+                                                       transmission)
 
     def get_vehicles_by_dealer(self, dealer):
         for mb_dealer in self._dataset['dealers']:
             if mb_dealer['name'].lower() == dealer.lower():
                 return mb_dealer['vehicles']
         return []
+
+    @property
+    def _all_vehicles(self):
+        """
+        Iterator over the list of all vehicles in the dataset.
+        """
+        for dealer in self._dataset['dealers']:
+            for vehicle in dealer['vehicles']:
+                yield vehicle
 
     def _load_dataset(self, path):
 
@@ -57,3 +46,13 @@ class TestDrive(object):
                 raise InvalidDataSetError(msg)
 
         return dataset
+
+    def _filter_vehicles_by_property_value(self, name, value):
+        """
+        Filter vehicles by the value of their property.
+        """
+        res = []
+        for vehicle in self._all_vehicles:
+            if vehicle[name].lower() == value.lower():
+                res += [vehicle]
+        return res
