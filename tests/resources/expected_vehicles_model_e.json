@@ -1,0 +1,68 @@
+{
+	"vehicles": [{
+			"id": "768a73af-4336-41c8-b1bd-76bd700378ce",
+			"model": "E",
+			"fuel": "ELECTRIC",
+			"transmission": "AUTO",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"monday": [
+					"1000",
+					"1030"
+				]
+			}
+		},
+		{
+			"id": "44a36bfa-ec8f-4448-b4c2-809203bdcb9e",
+			"model": "E",
+			"fuel": "GASOLINE",
+			"transmission": "MANUAL",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"wednesday": [
+					"1000",
+					"1030"
+				]
+			}
+		},
+		{
+			"id": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+			"model": "E",
+			"fuel": "GASOLINE",
+			"transmission": "AUTO",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"monday": [
+					"1000",
+					"1030"
+				]
+			}
+		},
+
+		{
+			"id": "875f00fa-9f67-44ea-bb26-75ff375fdd3f",
+			"model": "E",
+			"fuel": "ELECTRIC",
+			"transmission": "AUTO",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"monday": [
+					"1000",
+					"1030"
+				]
+			}
+		}
+	]
+}
