@@ -28,7 +28,11 @@ class TestDrive(object):
         return res
 
     def get_vehicles_by_fuel_type(self, fuel):
-        return []
+        res = []
+        for vehicle in self.all_vehicles:
+            if vehicle['fuel'].lower() == fuel.lower():
+                res += [vehicle]
+        return res
 
     def _load_dataset(self, path):
 
