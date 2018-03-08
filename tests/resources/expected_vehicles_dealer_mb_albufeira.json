@@ -1,0 +1,51 @@
+{
+	"vehicles": [{
+			"id": "768a73af-4336-41c8-b1bd-76bd700378ce",
+			"model": "E",
+			"fuel": "ELECTRIC",
+			"transmission": "AUTO",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"monday": [
+					"1000",
+					"1030"
+				]
+			}
+		},
+		{
+			"id": "d5d0aabc-c0de-4f38-badc-759f96f5fca3",
+			"model": "AMG",
+			"fuel": "ELECTRIC",
+			"transmission": "AUTO",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"monday": [
+					"1000",
+					"1030"
+				]
+			}
+		},
+		{
+			"id": "1cd6eae7-5f6f-42a7-a4ca-de7e498d9ce4",
+			"model": "AMG",
+			"fuel": "GASOLINE",
+			"transmission": "MANUAL",
+			"availability": {
+				"tuesday": [
+					"1000",
+					"1030"
+				],
+				"monday": [
+					"1000",
+					"1030"
+				]
+			}
+		}
+	]
+}
