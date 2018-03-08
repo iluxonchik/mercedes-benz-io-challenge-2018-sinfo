@@ -6,7 +6,15 @@ class TestDrive(object):
 
     def __init__(self, dataset):
         self._dataset_path = dataset
-        self._datset = self._load_dataset(self._dataset_path)
+        self._dataset = self._load_dataset(self._dataset_path)
+
+    def get_vehicles_by_model(self, model):
+        res = []
+        for dealer in self._dataset['dealers']:
+            for vehicle in dealer['vehicles']:
+                if vehicle['model'].lower() == model.lower():
+                    res += [vehicle]
+        return res
 
     def _load_dataset(self, path):
 
