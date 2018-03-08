@@ -34,6 +34,13 @@ class TestDrive(object):
                 res += [vehicle]
         return res
 
+    def get_vehicles_by_transmission(self, transmission):
+        res = []
+        for vehicle in self.all_vehicles:
+            if vehicle['transmission'].lower() == transmission.lower():
+                res += [vehicle]
+        return res
+
     def _load_dataset(self, path):
 
         with open(path, 'r') as file:
