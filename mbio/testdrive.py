@@ -41,6 +41,12 @@ class TestDrive(object):
                 res += [vehicle]
         return res
 
+    def get_vehicles_by_dealer(self, dealer):
+        for mb_dealer in self._dataset['dealers']:
+            if mb_dealer['name'].lower() == dealer.lower():
+                return mb_dealer['vehicles']
+        return []
+
     def _load_dataset(self, path):
 
         with open(path, 'r') as file:
