@@ -1,0 +1,103 @@
+{
+	"vehicles": [
+		{
+				"id": "768a73af-4336-41c8-b1bd-76bd700378ce",
+				"model": "E",
+				"fuel": "ELECTRIC",
+				"transmission": "AUTO",
+				"availability": {
+					"tuesday": [
+						"1000",
+						"1030"
+					],
+					"monday": [
+						"1000",
+						"1030"
+					]
+				}
+			},
+
+			{
+				"id": "d5d0aabc-c0de-4f38-badc-759f96f5fca3",
+				"model": "AMG",
+				"fuel": "ELECTRIC",
+				"transmission": "AUTO",
+				"availability": {
+					"tuesday": [
+						"1000",
+						"1030"
+					],
+					"monday": [
+						"1000",
+						"1030"
+					]
+				}
+			},
+
+			{
+					"id": "778a04fd-0a6a-4dc7-92bb-a7517608efc2",
+					"model": "A",
+					"fuel": "ELECTRIC",
+					"transmission": "AUTO",
+					"availability": {
+						"tuesday": [
+							"1000",
+							"1030"
+						],
+						"wednesday": [
+							"1000",
+							"1030"
+						]
+					}
+				},
+			{
+					"id": "893d97bf-5a9d-4926-ace3-39ad0585c912",
+					"model": "AMG",
+					"fuel": "ELECTRIC",
+					"transmission": "AUTO",
+					"availability": {
+						"tuesday": [
+							"1000",
+							"1030"
+						],
+						"wednesday": [
+							"1000",
+							"1030"
+						]
+					}
+			},
+			{
+					"id": "f0bd3390-58ae-4510-987e-a5bfe14973ff",
+					"model": "AMG",
+					"fuel": "ELECTRIC",
+					"transmission": "AUTO",
+					"availability": {
+						"tuesday": [
+							"1000",
+							"1030"
+						],
+						"monday": [
+							"1000",
+							"1030"
+						]
+					}
+				},
+				{
+					"id": "875f00fa-9f67-44ea-bb26-75ff375fdd3f",
+					"model": "E",
+					"fuel": "ELECTRIC",
+					"transmission": "AUTO",
+					"availability": {
+						"tuesday": [
+							"1000",
+							"1030"
+						],
+						"monday": [
+							"1000",
+							"1030"
+						]
+					}
+				}
+
+	]
+}
