@@ -101,3 +101,36 @@ class TestListVehiles(unittest.TestCase):
                                                   'MANUAL transmission vehicle'
                                                   ' listing when using mixed '
                                                   'case.')
+
+    def test_list_vehicles_by_dealer_no_results(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        expected = []
+        obtained = td.get_vehicles_by_dealer('Carvoeiro')
+        self.assertCountEqual(expected, obtained,
+                              'Mismatch in expected (empty) and obtained list '
+                              'of Carvoeiro deler query.')
+
+    def test_list_vehicles_by_dealer_mb_albufeira(self):
+        self.maxDiff = None
+        EXPECTED_JSON_FILE_PATH = './tests/resources/expected_vehicles_dealer_mb_albufeira.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            vehicle_list = json.load(f)
+        expected = vehicle_list['vehicles']
+        obtained = td.get_vehicles_by_dealer('MB Albufeira')
+        self.assertCountEqual(expected, obtained, 'Mismatch in obtained '
+                                                  'MB Albufeira dealer '
+                                                  'vehicles listing.')
+
+    def test_list_vehicles_by_dealer_mb_albufeira_mixed_case(self):
+        self.maxDiff = None
+        EXPECTED_JSON_FILE_PATH = './tests/resources/expected_vehicles_dealer_mb_albufeira.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            vehicle_list = json.load(f)
+        expected = vehicle_list['vehicles']
+        obtained = td.get_vehicles_by_dealer('Mb AlBuFeiRa')
+        self.assertCountEqual(expected, obtained, 'Mismatch in obtained '
+                                                  'MB Albufeira dealer '
+                                                  'vehicles listing when '
+                                                  'using mixed case.')
