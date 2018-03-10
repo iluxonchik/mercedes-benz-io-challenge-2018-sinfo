@@ -1,5 +1,8 @@
 """Code that loads the dataset and handles queries on it."""
 import json
+from collections import defaultdict, OrderedDict
+from mbio.utils import is_str_equal_ignore_case
+from mbio.geo.coordinate import Coordinate
 from mbio.exceptions import InvalidDataSetError
 
 class TestDrive(object):
@@ -27,6 +30,34 @@ class TestDrive(object):
                 return mb_dealer['vehicles']
         return []
 
+    def get_closest_dealer_with_vehicle(self, latitude, longitude, model=None,
+                                            fuel=None, transmission=None):
+        """
+        Sort dealers by distance
+        Foreach sorted dealer:
+            if dealer has vehicle with attrs, return
+        If all dealers have been passed through, return None
+        """
+        sorted_dealers = self._sort_dealers_by_distance(latitude, longitude)
+        for dealer_group in sorted_dealers:
+            for dealer in dealer_group:
+                if self._dealer_has_vehicle(dealer, model, fuel, transmission):
+                    return dealer
+        return None
+
+    def _sort_dealers_by_distance(self, latitude, longitude):
+        my_coord = Coordinate(latitude, longitude)
+        sorted_dealers = defaultdict(list)
+        # go through the dealers list and compute the distances
+        for dealer in self._dataset['dealers']:
+            dealer_coord = Coordinate(dealer['latitude'], dealer['longitude'])
+            distance = my_coord.distance_to(dealer_coord)
+            sorted_dealers[distance].append(dealer)
+        sorted_dealers = OrderedDict(sorted(sorted_dealers.items()))
+        sorted_dealers = [dealer for dealer in sorted_dealers.values()]
+        return sorted_dealers
+
+
     @property
     def _all_vehicles(self):
         """
@@ -53,6 +84,21 @@ class TestDrive(object):
         """
         res = []
         for vehicle in self._all_vehicles:
-            if vehicle[name].lower() == value.lower():
+            if is_str_equal_ignore_case(vehicle[name], value):
                 res += [vehicle]
         return res
+
+    def _dealer_has_vehicle(self, dealer, model, fuel, transmission):
+        vehicles = dealer['vehicles']
+        for vehicle in vehicles:
+            if model is not None:
+                if not is_str_equal_ignore_case(vehicle['model'], model):
+                    continue
+            if fuel is not None:
+                if not is_str_equal_ignore_case(vehicle['fuel'], fuel):
+                    continue
+            if transmission is not None:
+                if not is_str_equal_ignore_case(vehicle['transmission'], transmission):
+                    continue
+            return True
+        return False
