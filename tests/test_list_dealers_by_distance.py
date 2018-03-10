@@ -204,3 +204,16 @@ class TestListDealersByDistance(unittest.TestCase):
             self.LOC_2[1], 'A', 'B', 'C')
         self.assertEqual(expected, obtained, 'Wrong closest dealer '
                                              'returned.')
+
+    def test_get_closest_dealers_no_attributes_used(self):
+        # REGEX: "model": "E",\n\t+"fuel": "ELECTRIC",\n\t+"transmission": "AUTO"
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/dataset_full_modified_porto_albufeira.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full_modified_porto_albufeira.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealers_list = json.load(f)
+        expected = [dealers_list['dealers'][2], dealers_list['dealers'][1],
+                    dealers_list['dealers'][0]]
+        obtained = td.get_closest_dealers_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1])
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                             'returned.')
