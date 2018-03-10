@@ -27,7 +27,7 @@ class TestListDealersByDistance(unittest.TestCase):
         expected = dealers_list['dealers'][0]
         obtained = td.get_closest_dealer_with_vehicle(self.LOC_1[0],
             self.LOC_1[1], 'E', 'electric', 'auto')
-        self.assertCountEqual(expected, obtained, 'Wrong closest dealer '
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
                                                   'returned.')
 
 
@@ -39,5 +39,126 @@ class TestListDealersByDistance(unittest.TestCase):
         expected = dealers_list['dealers'][0]
         obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
             longitude=self.LOC_2[1], model='AMG', fuel='gasoline', transmission='manual')
-        self.assertCountEqual(expected, obtained, 'Wrong closest dealer '
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_no_attributes_used(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1])
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model=None, fuel=None, transmission=None)
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_model_only(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1], model='E')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model='E', fuel=None, transmission=None)
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_fuel_only(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1], fuel='gasoline')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model=None, fuel='gasoline', transmission=None)
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_transmission_only(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1], transmission='manual')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model=None, fuel=None, transmission='manual')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_model_and_fuel_only(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1], model='E', fuel='gasoline')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model='E', fuel='gasoline', transmission=None)
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_model_and_transmission_only(self):
+        self.maxDiff = None
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1], model='E', transmission='auto')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model='E', fuel=None, transmission='auto')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+    def test_get_closest_dealer_fuel_and_transmission_only(self):
+        self.maxDiff = None
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_porto.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            dealer_dict = json.load(f)
+        expected = dealer_dict['dealer']
+        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
+            longitude=self.LOC_2[1], fuel='ELECTRIC', transmission='auto')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
+                                                  'returned.')
+
+        # same as above, but with kwargs
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_2[0],
+            self.LOC_2[1], model=None, fuel=None, transmission='auto')
+        self.assertEqual(expected, obtained, 'Wrong closest dealer '
                                                   'returned.')
