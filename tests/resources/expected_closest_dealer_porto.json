@@ -1,0 +1,77 @@
+{
+	"dealer": {
+		"id": "d4f4d287-1ad6-4968-a8ff-e9e0009ad5d1",
+		"name": "MB Porto",
+		"latitude": 41.156287,
+		"longitude": -8.645977,
+		"closed": [
+			"thursday",
+			"wednesday"
+		],
+		"vehicles": [{
+				"id": "f0bd3390-58ae-4510-987e-a5bfe14973ff",
+				"model": "AMG",
+				"fuel": "ELECTRIC",
+				"transmission": "AUTO",
+				"availability": {
+					"tuesday": [
+						"1000",
+						"1030"
+					],
+					"monday": [
+						"1000",
+						"1030"
+					]
+				}
+			},
+			{
+				"id": "502ca69a-616b-43ce-9491-a6e20fc75a12",
+				"model": "A",
+				"fuel": "GASOLINE",
+				"transmission": "MANUAL",
+				"availability": {
+					"tuesday": [
+						"1000",
+						"1030"
+					],
+					"monday": [
+						"1000",
+						"1030"
+					]
+				}
+			},
+			{
+				"id": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+				"model": "E",
+				"fuel": "GASOLINE",
+				"transmission": "AUTO",
+				"availability": {
+					"tuesday": [
+						"1000",
+						"1030"
+					],
+					"monday": [
+						"1000",
+						"1030"
+					]
+				}
+			},
+			{
+				"id": "875f00fa-9f67-44ea-bb26-75ff375fdd3f",
+				"model": "E",
+				"fuel": "ELECTRIC",
+				"transmission": "AUTO",
+				"availability": {
+					"tuesday": [
+						"1000",
+						"1030"
+					],
+					"monday": [
+						"1000",
+						"1030"
+					]
+				}
+			}
+		]
+	}
+}
