@@ -32,18 +32,22 @@ class TestDrive(object):
 
     def get_closest_dealer_with_vehicle(self, latitude, longitude, model=None,
                                             fuel=None, transmission=None):
-        """
-        Sort dealers by distance
-        Foreach sorted dealer:
-            if dealer has vehicle with attrs, return
-        If all dealers have been passed through, return None
-        """
         sorted_dealers = self._sort_dealers_by_distance(latitude, longitude)
         for dealer_group in sorted_dealers:
             for dealer in dealer_group:
                 if self._dealer_has_vehicle(dealer, model, fuel, transmission):
                     return dealer
         return None
+
+    def get_closest_dealers_with_vehicle(self, latitude, longitude, model=None,
+                                            fuel=None, transmission=None):
+        res = []
+        sorted_dealers = self._sort_dealers_by_distance(latitude, longitude)
+        for dealer_group in sorted_dealers:
+            for dealer in dealer_group:
+                if self._dealer_has_vehicle(dealer, model, fuel, transmission):
+                    res += [dealer]
+        return res
 
     def _sort_dealers_by_distance(self, latitude, longitude):
         my_coord = Coordinate(latitude, longitude)
