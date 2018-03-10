@@ -13,30 +13,31 @@ class TestListDealersByDistance(unittest.TestCase):
 
     def test_get_closest_dealer_no_results(self):
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
-        expected = None
         obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_1[0],
-            self.LOC_1[1], model='E', fuel='air', transmission='manual')
+            longitude=self.LOC_1[1], model='E', fuel='air', transmission='manual')
         self.assertIsNone(obtained, 'Dealer has been returned, when none '
                                     'should have.')
 
     def test_get_closest_dealer_two_matches(self):
         # REGEX: "model": "E",\n\t+"fuel": "ELECTRIC",\n\t+"transmission": "AUTO"
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_two_matches.json'
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
             dealers_list = json.load(f)
         expected = dealers_list['dealers'][0]
-        obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_1[0],
-            self.LOC_1[1], model='E', fuel='electric', transmission='auto')
+        obtained = td.get_closest_dealer_with_vehicle(self.LOC_1[0],
+            self.LOC_1[1], 'E', 'electric', 'auto')
         self.assertCountEqual(expected, obtained, 'Wrong closest dealer '
                                                   'returned.')
 
 
     def test_get_closest_dealer_one_match(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/expected_closest_dealer_two_matches.json'
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
             dealers_list = json.load(f)
         expected = dealers_list['dealers'][0]
         obtained = td.get_closest_dealer_with_vehicle(latitude=self.LOC_2[0],
-            self.LOC_2[1], model='AMG', fuel='gasoline', transmission='manual')
+            longitude=self.LOC_2[1], model='AMG', fuel='gasoline', transmission='manual')
         self.assertCountEqual(expected, obtained, 'Wrong closest dealer '
                                                   'returned.')
