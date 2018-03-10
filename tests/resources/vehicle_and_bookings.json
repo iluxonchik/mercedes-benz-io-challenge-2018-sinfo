@@ -1,0 +1,50 @@
+{
+	"vehicle" : {
+		"id": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+		"model": "E",
+		"fuel": "GASOLINE",
+		"transmission": "AUTO",
+		"availability": {
+			"tuesday": [
+				"1000",
+				"1030"
+			],
+			"monday": [
+				"1000",
+				"1030"
+			]
+		}
+	},
+	"bookings": [{
+		"id": "a7297965-4040-426d-a82f-1181743533f1",
+		"firstName": "Hadassah",
+		"lastName": "Henderson",
+		"vehicleId": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+		"pickupDate": "2018-03-06T10:00:00",
+		"createdAt": "2018-02-26T08:42:46.297"
+	},
+	{
+		"id": "4b9b46a0-7522-4b52-9044-c7cec8e2469c",
+		"firstName": "Eddie",
+		"lastName": "Dalton",
+		"vehicleId": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+		"pickupDate": "2018-03-01T10:00:00",
+		"createdAt": "2018-02-26T08:42:46.295"
+	},
+	{
+		"id": "e12d1fde-a5e7-44ec-8e27-3f1d63eb4de8",
+		"firstName": "Justine",
+		"lastName": "Hartman",
+		"vehicleId": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+		"pickupDate": "2018-03-05T10:30:00",
+		"createdAt": "2018-02-26T08:42:46.296"
+	},
+	{
+		"id": "05922e93-a5a4-4926-aac3-1371dbf8152a",
+		"firstName": "Justine",
+		"lastName": "Cruz",
+		"vehicleId": "136fbb51-8a06-42fd-b839-c01ab87e2c6c",
+		"pickupDate": "2018-03-07T10:00:00",
+		"createdAt": "2018-02-26T08:42:46.297"
+	}]
+}
