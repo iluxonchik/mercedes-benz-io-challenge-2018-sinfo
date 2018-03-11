@@ -41,10 +41,11 @@ class BookingDate(object):
               UNLESS booking is cancelled
         """
         vehicle_availability = self._parse_availability(vehicle['availability'])
-        is_vehicle_compatible = self._is_vehicle_availabile(self._datetime, vehicle_availability)
+        is_vehicle_compatible = self._is_vehicle_availabile(self._datetime, vehicle_availability, bookings)
+        return is_vehicle_compatible
 
 
-    def _is_vehicle_availabile(self, datetime, vehicle_availability):
+    def _is_vehicle_availabile(self, datetime, vehicle_availability, bookings):
         booking_day = datetime.weekday()
         bookin_hour = datetime.hour
         booking_minute = datetime.minute
@@ -62,7 +63,7 @@ class BookingDate(object):
                 # ignore cancelled bookings
                 continue
             booking_datetime_str = booking['pickupDate']
-            booking_datetime = datetime.datetime.strptime(booking_datetime_str, "%Y-%m-%dT%H:%M:%S" )
+            booking_datetime = datetime.strptime(booking_datetime_str, "%Y-%m-%dT%H:%M:%S" )
             booking_datetimes.append(booking_datetime)
 
         if self._datetime in booking_datetimes:
@@ -74,8 +75,8 @@ class BookingDate(object):
         res = defaultdict(list)
         for day, time in availability.items():
             for t in time:
-                hour = t[0:2]
-                minute = t[2:4]
+                hour = int(t[0:2])
+                minute = int(t[2:4])
                 day_integer = self.DATE_MAP[day.lower()]
                 res[day_integer].append((hour, minute))
         return res
