@@ -19,3 +19,9 @@ class VehicleNotAvailableOnDateError(BookingError):
 
 class VehicleAlreadyBookedError(BookingError):
     pass
+
+class BookingDoesNotExistError(BookingError):
+    pass
+
+class BookingAlreadyCancelledError(BookingError):
+    pass
