@@ -8,7 +8,7 @@ from mbio.geo.coordinate import Coordinate
 from mbio.date.bookingdate import BookingDate, BookingResponse
 from mbio.exceptions import (InvalidDataSetError,  VehicleNotFoundError,
                     VehicleAlreadyBookedError, VehicleNotAvailableOnDateError,
-                    BookingError)
+                    BookingError, BookingDoesNotExistError, BookingAlreadyCancelledError)
 
 class TestDrive(object):
 
