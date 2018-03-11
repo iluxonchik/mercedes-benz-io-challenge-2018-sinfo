@@ -5,8 +5,9 @@ import datetime
 from collections import defaultdict, OrderedDict
 from mbio.utils import is_str_equal_ignore_case
 from mbio.geo.coordinate import Coordinate
-from mbio.date.bookingdate import BookingDate
-from mbio.exceptions import InvalidDataSetError, VehicleNotFoundError
+from mbio.date.bookingdate import BookingDate, BookingResponse
+from mbio.exceptions import (InvalidDataSetError,  VehicleNotFoundError,
+                    VehicleAlreadyBookedError, VehicleNotAvailableOnDateError)
 
 class TestDrive(object):
 
@@ -69,8 +70,23 @@ class TestDrive(object):
             new_booking = self._create_booking(first_name, last_name,
                             vehicle_id, pickup_date, vehicle, bookings)
             return new_booking
-        elif True:
-            pass
+
+        # here we know that hte booking is not possible, let's check the reason
+        error_code = booking_result.error_code
+        # if the error code has not been set, something went wrong
+        assert error_code is not None, 'Error code has not been set'
+
+        if error_code is BookingResponse.ERR_CAR_DATE:
+            msg = 'The requested vehicle is not available on {}'.format(pickup_date.isoformat())
+            raise VehicleNotAvailableOnDateError(msg)
+        elif error_code is BookingResponse.ERR_BOOKING_EXITS:
+            msg = 'Booking for {} already exists'.format(pickup_date.isoformat())
+            raise VehicleAlreadyBookedError(msg)
+        else:
+            # somehting else went wrong, this shouldn't realy happen, but
+            # let's not let the app crash here
+            raise BookingError('Could not create booking.')
+
 
     def _create_booking(self, first_name, last_name, vehicle_id, pickup_date, vehicle, bookings):
         new_booking = self._create_booking_obj(first_name, last_name, vehicle_id, pickup_date)
