@@ -6,7 +6,8 @@ import unittest
 from unittest.mock import patch
 from mbio.testdrive import TestDrive
 from mbio.exceptions import (VehicleNotFoundError, VehicleAlreadyBookedError,
-                             VehicleNotAvailableOnDateError, BookingError)
+                             VehicleNotAvailableOnDateError, BookingError,
+                             BookingAlreadyCancelledError, BookingDoesNotExistError)
 from mbio.date.bookingdate import BookingResponse
 
 MOCKED_UUIDS = ['136fbb51-8a06-42fd-b839-d01ab87e2c6c', '136fbb51-8a06-42fd-b839-c01ab87e2c6b',
@@ -190,3 +191,61 @@ class BookingsTestCase(unittest.TestCase):
         self.assertNotIn(original, td._dataset['bookings'])
         # make sure cancelled booking has been added to the dataset
         self.assertIn(expected, td._dataset['bookings'])
+
+    def test_double_cancel_booking_fail(self):
+        booking_id = '184b5438-35dc-49c4-aab0-e6cf62285aa6'
+        reason = "Can't bang Dr.Dre with good enough sound quality."
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+
+        original = {
+			"id": "184b5438-35dc-49c4-aab0-e6cf62285aa6",
+			"firstName": "Marcus",
+			"lastName": "Cruz",
+			"vehicleId": "44a36bfa-ec8f-4448-b4c2-809203bdcb9e",
+			"pickupDate": "2018-03-04T10:30:00",
+			"createdAt": "2018-02-26T08:42:46.291"
+		}
+
+        self.assertIn(original, td._dataset['bookings'])
+
+        obtained = td.cancel_booking(booking_id, reason=reason)
+        expected = {
+			"id": "184b5438-35dc-49c4-aab0-e6cf62285aa6",
+			"firstName": "Marcus",
+			"lastName": "Cruz",
+			"vehicleId": "44a36bfa-ec8f-4448-b4c2-809203bdcb9e",
+			"pickupDate": "2018-03-04T10:30:00",
+			"createdAt": "2018-02-26T08:42:46.291",
+            "cancelledAt": MockedDateTime.MOCKED_DATE_VALUE.isoformat(),
+            "cancelledReason": reason,
+    	}
+
+        # make sure cancelled booking has been added to the dataset
+        self.assertIn(expected, td._dataset['bookings'])
+
+        new_reason = 'Would you do it if my name was Dre?'
+        not_expected = {
+			"id": "184b5438-35dc-49c4-aab0-e6cf62285aa6",
+			"firstName": "Marcus",
+			"lastName": "Cruz",
+			"vehicleId": "44a36bfa-ec8f-4448-b4c2-809203bdcb9e",
+			"pickupDate": "2018-03-04T10:30:00",
+			"createdAt": "2018-02-26T08:42:46.291",
+            "cancelledAt": MockedDateTime.MOCKED_DATE_VALUE.isoformat(),
+            "cancelledReason": new_reason,
+    	}
+
+
+        with self.assertRaises(BookingAlreadyCancelledError):
+            td.cancel_booking(booking_id, reason=new_reason)
+
+        self.assertIn(expected, td._dataset['bookings'])
+        self.assertNotIn(new_reason, td._dataset['bookings'])
+
+    def test_double_cancel_booking_does_not_exit_fail(self):
+        booking_id = "The product of Gin and Juice inside of my baby bottle."
+        reason = "Can't bang Dr.Dre with good enough sound quality."
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+
+        with self.assertRaises(BookingDoesNotExistError):
+            td.cancel_booking(booking_id, 'I Grew Up On Wu-Tang')
