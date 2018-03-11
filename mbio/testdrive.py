@@ -7,7 +7,8 @@ from mbio.utils import is_str_equal_ignore_case
 from mbio.geo.coordinate import Coordinate
 from mbio.date.bookingdate import BookingDate, BookingResponse
 from mbio.exceptions import (InvalidDataSetError,  VehicleNotFoundError,
-                    VehicleAlreadyBookedError, VehicleNotAvailableOnDateError)
+                    VehicleAlreadyBookedError, VehicleNotAvailableOnDateError,
+                    BookingError)
 
 class TestDrive(object):
 
