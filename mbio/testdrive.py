@@ -1,9 +1,12 @@
 """Code that loads the dataset and handles queries on it."""
 import json
+import uuid
+import datetime
 from collections import defaultdict, OrderedDict
 from mbio.utils import is_str_equal_ignore_case
 from mbio.geo.coordinate import Coordinate
-from mbio.exceptions import InvalidDataSetError
+from mbio.date.bookingdate import BookingDate
+from mbio.exceptions import InvalidDataSetError, VehicleNotFoundError
 
 class TestDrive(object):
 
@@ -48,6 +51,45 @@ class TestDrive(object):
                 if self._dealer_has_vehicle(dealer, model, fuel, transmission):
                     res += [dealer]
         return res
+
+    def create_booking(self, first_name, last_name, vehicle_id, pickup_date):
+        vehicles_with_id = self._filter_vehicles_by_property_value('id', vehicle_id)
+        assert len(vehicles_with_id) < 2, 'More than one vehicles with the same id.'
+
+        if len(vehicles_with_id) < 1:
+            raise VehicleNotFoundError('Vehicle with id {} was not found'.format(vehicle_id))
+        vehicle = vehicles_with_id[0]
+        bookings = self._dataset['bookings']
+        booking_date = BookingDate(pickup_date)
+        booking_result = booking_date.is_booking_possible(vehicle, bookings)
+
+        booking_possible = booking_result.is_success
+        if booking_possible:
+            # all good, create a booking, and add it to bookings
+            new_booking = self._create_booking(first_name, last_name,
+                            vehicle_id, pickup_date, vehicle, bookings)
+            return new_booking
+        elif True:
+            pass
+
+    def _create_booking(self, first_name, last_name, vehicle_id, pickup_date, vehicle, bookings):
+        new_booking = self._create_booking_obj(first_name, last_name, vehicle_id, pickup_date)
+        # insert booking into db
+        bookings.append(new_booking)
+        return new_booking
+
+
+    def _create_booking_obj(self, first_name, last_name, vehicle_id, pickup_date):
+        booking = {
+                    'id': uuid.uuid4(),
+                    'firstName': first_name,
+                    'lastName': last_name,
+                    'vehicleId': vehicle_id,
+                    'pickupDate': pickup_date.isoformat(),
+                    'createdAt': datetime.datetime.today()
+        }
+        return booking
+
 
     def _sort_dealers_by_distance(self, latitude, longitude):
         my_coord = Coordinate(latitude, longitude)
