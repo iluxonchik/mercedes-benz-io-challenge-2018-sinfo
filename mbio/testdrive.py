@@ -88,6 +88,28 @@ class TestDrive(object):
             # let's not let the app crash here
             raise BookingError('Could not create booking.')
 
+    def cancel_booking(self, booking_id, reason):
+        booking = self._get_booking(booking_id)
+
+        if booking is None:
+            msg = 'Booking with id {} does not exist'.format(booking_id)
+            raise BookingDoesNotExistError(msg)
+
+        # check if booking was already cancelled
+        if 'cancelledAt' in booking:
+            msg = 'Booking with id {} is has already been cancelled'
+            raise BookingAlreadyCancelledError(msg)
+
+        booking['cancelledAt'] = datetime.datetime.today().isoformat()
+        booking['cancelledReason'] = reason
+
+        return booking
+
+    def _get_booking(self, booking_id):
+        for booking in self._dataset['bookings']:
+            if is_str_equal_ignore_case(booking['id'], booking_id):
+                return booking
+        return None
 
     def _create_booking(self, first_name, last_name, vehicle_id, pickup_date, vehicle, bookings):
         new_booking = self._create_booking_obj(first_name, last_name, vehicle_id, pickup_date)
