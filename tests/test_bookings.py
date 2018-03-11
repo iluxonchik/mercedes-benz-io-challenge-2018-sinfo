@@ -1,9 +1,13 @@
 """Booking creation and cancelling tests."""
+import copy
+import uuid
+import datetime
 import unittest
 from unittest.mock import patch
 from mbio.testdrive import TestDrive
-import datetime
-import uuid
+from mbio.exceptions import (VehicleNotFoundError, VehicleAlreadyBookedError,
+                             VehicleNotAvailableOnDateError, BookingError)
+from mbio.date.bookingdate import BookingResponse
 
 MOCKED_UUIDS = ['136fbb51-8a06-42fd-b839-d01ab87e2c6c', '136fbb51-8a06-42fd-b839-c01ab87e2c6b',
 '132fbb51-8a06-42fd-b839-c01ab87e2c6c']
@@ -56,6 +60,99 @@ class BookingsTestCase(unittest.TestCase):
         self.assertIsNotNone(obtained_booking, 'No booking returned')
         self.assertEqual(expected_booking, obtained_booking,
                          'Erroneous booking obtained.')
+        dataset = td._dataset
+        bookings = dataset['bookings']
+        self.assertTrue(obtained_booking in bookings, 'New booking was not '
+                        'added to the dataset.')
+
+    def test_booking_booking_exists_fail(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        vehicle_id = '136fbb51-8a06-42fd-b839-c01ab87e2c6c'
+        # reservation for April 9th at 10:00 (Tuesday)
+        pickup_date = datetime.datetime(2018, 3, 5, 10, 00)
+        with self.assertRaises(VehicleAlreadyBookedError):
+            result = td.create_booking(first_name='Jayceon', last_name='Taylor',
+                          vehicle_id=vehicle_id,
+                          pickup_date=pickup_date)
+
+    def test_booking_unavailable_datetime_fail(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        vehicle_id = '136fbb51-8a06-42fd-b839-c01ab87e2c6c'
+        original_dataset = copy.deepcopy(td._dataset)
+        # reservation for April 9th at 10:00 (Tuesday)
+        pickup_date = datetime.datetime(2018, 3, 5, 10, 2)
+        with self.assertRaises(VehicleNotAvailableOnDateError):
+            result = td.create_booking(first_name='Jayceon', last_name='Taylor',
+                          vehicle_id=vehicle_id,
+                          pickup_date=pickup_date)
+        # make sure dataset was not modified
+        self.assertEqual(original_dataset, td._dataset, 'Dataset has been changed.')
+
+    def test_booking_vehicle_does_not_exist_fail(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        vehicle_id = '136fbb51-8a06-42fd-1992-c01ab87e2c6c'
+        original_dataset = copy.deepcopy(td._dataset)
+        # reservation for April 9th at 10:00 (Tuesday)
+        pickup_date = datetime.datetime(2018, 3, 5, 10, 0)
+        with self.assertRaises(VehicleNotFoundError):
+            result = td.create_booking(first_name='Jayceon', last_name='Taylor',
+                          vehicle_id=vehicle_id,
+                          pickup_date=pickup_date)
+        # make sure dataset was not modified
+        self.assertEqual(original_dataset, td._dataset, 'Dataset has been changed.')
+
+
+    def test_booking_error_code_failure_fail(self):
+        """Emulates what would happen if the error code was set to something
+        unexpected"""
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        vehicle_id = '136fbb51-8a06-42fd-1992-c01ab87e2c6c'
+        original_dataset = copy.deepcopy(td._dataset)
+        # reservation for April 9th at 10:00 (Tuesday)
+        pickup_date = datetime.datetime(2018, 3, 6, 10, 0)
+        with self.assertRaises(BookingError):
+            BookingResponse.ERR_CAR_DATE = 'The Documentary'
+            result = td.create_booking(first_name='Jayceon', last_name='Taylor',
+                          vehicle_id=vehicle_id,
+                          pickup_date=pickup_date)
+        # make sure dataset was not modified
+        self.assertEqual(original_dataset, td._dataset, 'Dataset has been changed.')
+
+    @patch.object(uuid, 'uuid4', side_effect=MOCKED_UUIDS)
+    def test_double_booking_fail(self, uuid):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        vehicle_id = '136fbb51-8a06-42fd-b839-c01ab87e2c6c'
+        # reservation for April 9th at 10:00 (Tuesday)
+        pickup_date = datetime.datetime(2019, 4, 9, 10, 00)
+        result = td.create_booking(first_name='Jayceon', last_name='Taylor',
+                          vehicle_id=vehicle_id,
+                          pickup_date=pickup_date)
+
+        # now, make sure that a booking object was created and added
+        UUID_stub = MOCKED_UUIDS[0]
+
+        expected_booking = {
+                    		"id": UUID_stub,
+                    		"firstName": "Jayceon",
+                    		"lastName": "Taylor",
+                    		"vehicleId": vehicle_id,
+                    		"pickupDate": pickup_date.isoformat(),
+                    		"createdAt": MockedDateTime.MOCKED_DATE_VALUE
+                    }
+        obtained_booking = result
+        self.assertIsNotNone(obtained_booking, 'No booking returned')
+        self.assertEqual(expected_booking, obtained_booking,
+                         'Erroneous booking obtained.')
+        dataset = td._dataset
+        bookings = dataset['bookings']
+        self.assertTrue(obtained_booking in bookings, 'New booking was not '
+                        'added to the dataset.')
+
+        with self.assertRaises(VehicleAlreadyBookedError):
+            result = td.create_booking(first_name='Jayceon', last_name='Taylor',
+                                      vehicle_id=vehicle_id,
+                                      pickup_date=pickup_date)
+        # make sure booking is still there
         dataset = td._dataset
         bookings = dataset['bookings']
         self.assertTrue(obtained_booking in bookings, 'New booking was not '
