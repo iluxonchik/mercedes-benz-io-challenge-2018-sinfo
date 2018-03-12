@@ -8,7 +8,8 @@ from mbio.geo.coordinate import Coordinate
 from mbio.date.bookingdate import BookingDate, BookingResponse
 from mbio.exceptions import (InvalidDataSetError,  VehicleNotFoundError,
                     VehicleAlreadyBookedError, VehicleNotAvailableOnDateError,
-                    BookingError, BookingDoesNotExistError, BookingAlreadyCancelledError)
+                    BookingError, BookingDoesNotExistError, BookingAlreadyCancelledError,
+                    DatasetNotFoundError)
 
 class TestDrive(object):
 
@@ -175,15 +176,18 @@ class TestDrive(object):
                 yield vehicle
 
     def _load_dataset(self, path):
+        try:
+            with open(path, 'r') as f:
+                try:
+                    dataset = json.load(f)
+                except json.JSONDecodeError:
+                    msg = 'Error in when decoding JSON file: {}'.format(path)
+                    raise InvalidDataSetError(msg)
+            return dataset
+        except FileNotFoundError:
+            msg = 'Dataset at {} not found. Make sure that the file path is correct.'.format(path)
+            raise DatasetNotFoundError(msg)
 
-        with open(path, 'r') as file:
-            try:
-                dataset = json.load(file)
-            except json.JSONDecodeError:
-                msg = f'Error in when decoding JSON file: {path}'
-                raise InvalidDataSetError(msg)
-
-        return dataset
 
     def _filter_vehicles_by_property_value(self, name, value, vehicles=None):
         """
