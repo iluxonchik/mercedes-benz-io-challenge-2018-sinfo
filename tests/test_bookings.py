@@ -249,3 +249,7 @@ class BookingsTestCase(unittest.TestCase):
 
         with self.assertRaises(BookingDoesNotExistError):
             td.cancel_booking(booking_id, 'I Grew Up On Wu-Tang')
+
+    def test_cancel_booking_then_reserve_for_that_date(self):
+        # TODO
+        pass
