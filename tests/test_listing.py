@@ -194,7 +194,6 @@ class TestListVehiles(unittest.TestCase):
                               'of MANUAL transmission query.')
 
     def test_attr_list_vehicles_by_transmission_manual(self):
-        self.maxDiff = None
         EXPECTED_JSON_FILE_PATH = './tests/resources/expected_vehicles_transmission_manual.json'
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
@@ -206,7 +205,6 @@ class TestListVehiles(unittest.TestCase):
                                                   'listing.')
 
     def test_attr_list_vehicles_by_dealer_no_results(self):
-        self.maxDiff = None
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
         expected = []
         obtained = td.get_vehicles_by_attributes(dealer='Carvoeiro')
@@ -221,7 +219,6 @@ class TestListVehiles(unittest.TestCase):
 
 
     def test_attr_list_vehicles_by_dealer_mb_albufeira(self):
-        self.maxDiff = None
         EXPECTED_JSON_FILE_PATH = './tests/resources/expected_vehicles_dealer_mb_albufeira.json'
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
@@ -231,3 +228,21 @@ class TestListVehiles(unittest.TestCase):
         self.assertCountEqual(expected, obtained, 'Mismatch in obtained '
                                                   'MB Albufeira dealer '
                                                   'vehicles listing.')
+
+    def test_attr_get_specific_vehicle(self):
+        EXPECTED_JSON_FILE_PATH = './tests/resources/expected_vehicles_dealer_mb_albufeira.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            vehicle_list = json.load(f)
+        expected = [vehicle_list['vehicles'][0]]
+        obtained = td.get_vehicles_by_attributes(dealer='846679bd-5831-4286-969b-056e9c89d74c',
+        model='E', fuel='EleCtRIc', transmission='auto')
+
+    def test_attr_get_dealer_fuel_vehicle(self):
+        EXPECTED_JSON_FILE_PATH = './tests/resources/expected_vehicles_dealer_mb_albufeira.json'
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            vehicle_list = json.load(f)
+        expected = [vehicle_list['vehicles'][0], vehicle_list['vehicles'][1]]
+        obtained = td.get_vehicles_by_attributes(dealer='846679bd-5831-4286-969b-056e9c89d74c',
+        fuel='EleCtRIc')
