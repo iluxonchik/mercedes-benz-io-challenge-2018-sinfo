@@ -16,20 +16,42 @@ class TestDrive(object):
         self._dataset_path = dataset
         self._dataset = self._load_dataset(self._dataset_path)
 
-    def get_vehicles_by_model(self, model):
+    def get_vehicles_by_attributes(self, dealer=None, model=None, fuel=None, transmission=None):
+        vehicles = self._all_vehicles
+
+        if dealer is not None:
+            vehicles = self.get_vehicles_by_dealer(dealer, vehicles)
+        if model is not None:
+            vehicles = self.get_vehicles_by_model(model, vehicles)
+        if fuel is not None:
+            vehicles = self.get_vehicles_by_fuel_type(fuel, vehicles)
+        if transmission is not None:
+            vehicles = self.get_vehicles_by_transmission(transmission, vehicles)
+
+        return vehicles
+
+    def get_vehicles_by_model(self, model, vehicles=None):
         """
         Returns a list of vehicles with the specified model.
         """
-        return self._filter_vehicles_by_property_value('model', model)
+        vehicles = vehicles if vehicles is not None else self._all_vehicles
 
-    def get_vehicles_by_fuel_type(self, fuel):
-        return self._filter_vehicles_by_property_value('fuel', fuel)
+        return self._filter_vehicles_by_property_value('model', model, vehicles)
 
-    def get_vehicles_by_transmission(self, transmission):
+    def get_vehicles_by_fuel_type(self, fuel, vehicles=None):
+        vehicles = vehicles if vehicles is not None else self._all_vehicles
+
+        return self._filter_vehicles_by_property_value('fuel', fuel, vehicles)
+
+    def get_vehicles_by_transmission(self, transmission, vehicles=None):
+        vehicles = vehicles if vehicles is not None else self._all_vehicles
+
         return self._filter_vehicles_by_property_value('transmission',
-                                                       transmission)
+                                                       transmission, vehicles)
 
-    def get_vehicles_by_dealer(self, dealer):
+    def get_vehicles_by_dealer(self, dealer, vehicles=None):
+        vehicles = vehicles if vehicles is not None else self._all_vehicles
+
         for mb_dealer in self._dataset['dealers']:
             if mb_dealer['name'].lower() == dealer.lower():
                 return mb_dealer['vehicles']
@@ -163,12 +185,14 @@ class TestDrive(object):
 
         return dataset
 
-    def _filter_vehicles_by_property_value(self, name, value):
+    def _filter_vehicles_by_property_value(self, name, value, vehicles=None):
         """
         Filter vehicles by the value of their property.
         """
+        vehicles = vehicles if vehicles is not None else self._all_vehicles
+
         res = []
-        for vehicle in self._all_vehicles:
+        for vehicle in vehicles:
             if is_str_equal_ignore_case(vehicle[name], value):
                 res += [vehicle]
         return res
