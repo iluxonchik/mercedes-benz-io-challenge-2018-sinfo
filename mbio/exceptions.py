@@ -6,6 +6,9 @@ class InvalidDataSetError(TestDriveError):
     """The provided JSON data set is invalid."""
     pass
 
+class DatasetNotFoundError(TestDriveError):
+    pass
+
 class BookingError(TestDriveError):
     """Base exception for all errors raised by the booking process."""
     pass
