@@ -117,7 +117,7 @@ class TestListVehiles(unittest.TestCase):
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
             vehicle_list = json.load(f)
         expected = vehicle_list['vehicles']
-        obtained = td.get_vehicles_by_dealer('MB Albufeira')
+        obtained = td.get_vehicles_by_dealer('846679bd-5831-4286-969b-056e9c89d74c')
         self.assertCountEqual(expected, obtained, 'Mismatch in obtained '
                                                   'MB Albufeira dealer '
                                                   'vehicles listing.')
@@ -129,7 +129,7 @@ class TestListVehiles(unittest.TestCase):
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
             vehicle_list = json.load(f)
         expected = vehicle_list['vehicles']
-        obtained = td.get_vehicles_by_dealer('Mb AlBuFeiRa')
+        obtained = td.get_vehicles_by_dealer('846679bd-5831-4286-969b-056E9c89D74c')
         self.assertCountEqual(expected, obtained, 'Mismatch in obtained '
                                                   'MB Albufeira dealer '
                                                   'vehicles listing when '
@@ -227,7 +227,7 @@ class TestListVehiles(unittest.TestCase):
         with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
             vehicle_list = json.load(f)
         expected = vehicle_list['vehicles']
-        obtained = td.get_vehicles_by_attributes(dealer='MB Albufeira')
+        obtained = td.get_vehicles_by_attributes(dealer='846679bd-5831-4286-969b-056e9c89d74c')
         self.assertCountEqual(expected, obtained, 'Mismatch in obtained '
                                                   'MB Albufeira dealer '
                                                   'vehicles listing.')
