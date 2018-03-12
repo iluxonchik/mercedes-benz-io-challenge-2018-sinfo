@@ -1,5 +1,6 @@
 """BookingDate class implementation."""
 from collections import defaultdict
+from mbio.date.utils import isoformat_to_datetime
 
 class BookingResponse(object):
     """Response to the request of the booking availability."""
@@ -63,7 +64,7 @@ class BookingDate(object):
                 # ignore cancelled bookings
                 continue
             booking_datetime_str = booking['pickupDate']
-            booking_datetime = datetime.strptime(booking_datetime_str, "%Y-%m-%dT%H:%M:%S" )
+            booking_datetime = isoformat_to_datetime(booking_datetime_str)
             booking_datetimes.append(booking_datetime)
 
         if self._datetime in booking_datetimes:
