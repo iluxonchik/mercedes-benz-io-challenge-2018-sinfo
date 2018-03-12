@@ -39,7 +39,7 @@ class Server(BaseHTTPRequestHandler):
             VEHICLES: self.get_vehicles,
 
             DEALERS_CLOSEST_LIST: self.get_closest_dealers_list,
-            DEALER_CLOSEST: None,
+            DEALER_CLOSEST: self.get_closest_dealer,
             DEALERS_IN_POLYGON: None,
 
             BOOKINGS_CREATE: None,
@@ -118,6 +118,26 @@ class Server(BaseHTTPRequestHandler):
         res = self._td.get_closest_dealers_with_vehicle(latitude, longitude, model, fuel, transmission)
 
         res_json = {'dealers': res}
+        self._respond_json(res_json, self.HTTP_OK)
+
+    @handle_expcetions
+    def get_closest_dealer(self, args):
+        model = args.get('model', None)
+        fuel = args.get('fuel', None)
+        transmission = args.get('transmission', None)
+        latitude = args.get('latitude', None)
+        longitude = args.get('longitude', None)
+
+        latitude = float(latitude) if latitude is not None else latitude
+        longitude = float(longitude) if longitude is not None else longitude
+
+        if None in (latitude, longitude):
+            self._respond_API_error(msg='latitude and longitude parameters are required')
+            return
+
+        res = self._td.get_closest_dealer_with_vehicle(latitude, longitude, model, fuel, transmission)
+
+        res_json = {'dealer': res}
         self._respond_json(res_json, self.HTTP_OK)
 
     def _respond_API_error(self, msg):
