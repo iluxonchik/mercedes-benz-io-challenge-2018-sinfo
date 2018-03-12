@@ -17,7 +17,7 @@ class TestDrive(object):
         self._dataset = self._load_dataset(self._dataset_path)
 
     def get_vehicles_by_attributes(self, dealer=None, model=None, fuel=None, transmission=None):
-        vehicles = self._all_vehicles
+        vehicles = list(self._all_vehicles)
 
         if dealer is not None:
             vehicles = self.get_vehicles_by_dealer(dealer, vehicles)
