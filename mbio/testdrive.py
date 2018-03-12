@@ -53,7 +53,7 @@ class TestDrive(object):
         vehicles = vehicles if vehicles is not None else self._all_vehicles
 
         for mb_dealer in self._dataset['dealers']:
-            if mb_dealer['name'].lower() == dealer.lower():
+            if mb_dealer['id'].lower() == dealer.lower():
                 return mb_dealer['vehicles']
         return []
 
