@@ -3,6 +3,7 @@
 import unittest
 import json
 from mbio.testdrive import TestDrive
+from mbio.exceptions import TestDriveError
 
 
 class TestListDealersByDistance(unittest.TestCase):
@@ -254,3 +255,15 @@ class TestListDealersByDistance(unittest.TestCase):
         obtained = td.get_dealers_in_polygon_with_vehicle(portugal, model='a', fuel='gasoline', transmission='manual')
         expected = [td._dataset['dealers'][2]]
         self.assertCountEqual(expected, obtained)
+
+    def test_get_dealers_in_polygon_invalid(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        portugal = [
+                [42.203891, -9.525033],
+                [36.800254, -9.349252],
+                [37.203849, -5.899545],
+                [42.268963, -6.031381],
+                [42.268963, -6.031381],
+        ]
+        with self.assertRaises(TestDriveError):
+            obtained = td.get_dealers_in_polygon_with_vehicle(portugal, model='a', fuel='gasoline', transmission='manual')

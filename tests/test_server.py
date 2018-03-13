@@ -183,7 +183,53 @@ class RESTServerTestCase(unittest.TestCase):
                     "cancelledReason": "On a scale from one to ten I'm a nine, with two M's"
                 }
 
-        self.assertEqual(expected, obtained)        
+        self.assertEqual(expected, obtained)
+
+    def test_dealers_in_polygon(self):
+        EXPECTED_JSON_FILE_PATH  = './tests/resources/dealer_mb_lisboa.json'
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            expected = json.load(f)
+
+        data = {
+            "coordinates": [
+                  [42.203891, -9.525033],
+                  [36.800254, -9.349252],
+                  [37.203849, -5.899545],
+                  [42.268963, -6.031381]
+            ],
+            "model": "E",
+            "fuel": "gasoline",
+            "transmission":"manual"
+            }
+
+        res = self._post_request('{}'.format(Endpoint.DEALERS_IN_POLYGON), data)
+        obtained = json.loads(res)
+
+        self.assertEqual(expected, obtained)
+
+    def test_get_closest_dealer(self):
+        url = '{}?latitude=38.187787&longitude=-8.104157&model=amg&fuel=gasoline&transmission=manual'.format(Endpoint.DEALER_CLOSEST)
+
+        EXPECTED_JSON_FILE_PATH = './tests/resources/dealer_mb_albufeira.json'
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            expected = json.load(f)
+
+        res = self._get_request(url)
+        obtained = json.loads(res)
+
+        self.assertEqual(expected, obtained)
+
+    def test_get_closest_dealer_list(self):
+        url = '{}?latitude=38.187787&longitude=-8.104157&model=amg&fuel=gasoline'.format(Endpoint.DEALERS_CLOSEST_LIST)
+
+        EXPECTED_JSON_FILE_PATH = './tests/resources/closest_dealer_list.json'
+        with open(EXPECTED_JSON_FILE_PATH, 'r') as f:
+            expected = json.load(f)
+
+        res = self._get_request(url)
+        obtained = json.loads(res)
+
+        self.assertEqual(expected, obtained)
 
     def _get_request(self, endpoint):
         url = 'http://localhost:{}{}'.format(RESTServerTestCase.SERVER_PORT, endpoint)
