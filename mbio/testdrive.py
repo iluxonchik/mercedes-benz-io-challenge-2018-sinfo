@@ -67,6 +67,20 @@ class TestDrive(object):
                     return dealer
         return None
 
+    def get_dealers_in_polugon_with_vehicle(self, coord_pair, model=None, fuel=None,
+                                        transmission=None):
+
+        res = []
+        polygon = [Coordinate(*lat_lon_pair) for lat_lon_pair in coord_pair]
+        for dealer in self._dataset['dealers']:
+            if self._dealer_has_vehicle(dealer, model, fuel, transmission):
+                dealer_coord = Coordinate(dealer['latitude'], dealer['longitude'])
+                if dealer_coord.is_inside_polygon(polygon):
+                    res.append(dealer)
+        return res
+
+
+
     def get_closest_dealers_with_vehicle(self, latitude, longitude, model=None,
                                             fuel=None, transmission=None):
         res = []
