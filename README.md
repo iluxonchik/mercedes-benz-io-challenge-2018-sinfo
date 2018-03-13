@@ -90,10 +90,44 @@ challenge, I decided to go "raw" and only use what Python comes with.
 For the most part, I followed the `TDD` approach.
 
 Unfortunately, due to lack of time I did not have enough time (master thesis work and other errands) to implement
-more tests. The coverage is good: `94%+`, but if I had more time I would've added more server tests. The domain test coverage is `100%`.
+more tests. The coverage is good: `97%+`, but if I had more time I would've added more server tests and improve them. The domain test coverage is `100%`.
 
 The distance computation
 between two coordinates, as well as the coordinate in polygon test does not take Earth's curvature into consideration.
+
+The last run showed the following coverage:
+
+```
+Ran 82 tests in 8.698s
+
+OK
+Name                                     Stmts   Miss  Cover   Missing
+----------------------------------------------------------------------
+mbio/__init__.py                             0      0   100%
+mbio/date/bookingdate.py                    47      0   100%
+mbio/date/utils.py                           4      0   100%
+mbio/exceptions.py                          18      0   100%
+mbio/geo/__init__.py                         0      0   100%
+mbio/geo/coordinate.py                      59      0   100%
+mbio/geo/exceptions.py                       2      0   100%
+mbio/server/__init__.py                      0      0   100%
+mbio/server/decorators.py                   20     10    50%   19-30
+mbio/server/endpoint.py                      8      0   100%
+mbio/server/server.py                      234     36    85%   114, 168-170, 196-197, 212-213, 217-218, 229-232, 249-250, 265-266, 278-282, 293-294, 298-301, 308-309, 327, 332-335, 348
+mbio/testdrive.py                          158      0   100%
+mbio/utils.py                               14      0   100%
+tests/test_bookings.py                     111      0   100%
+tests/test_cooridinates.py                  63      0   100%
+tests/test_date.py                          85      0   100%
+tests/test_list_dealers_by_distance.py     158      0   100%
+tests/test_listing.py                      169      0   100%
+tests/test_server.py                       146      0   100%
+tests/test_test_drive.py                    10      0   100%
+tests/test_utils.py                         15      0   100%
+----------------------------------------------------------------------
+TOTAL                                     1321     46    97%
+
+```
 
 # REST API
 
