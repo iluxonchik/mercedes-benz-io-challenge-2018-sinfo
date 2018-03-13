@@ -9,7 +9,8 @@ from mbio.date.bookingdate import BookingDate, BookingResponse
 from mbio.exceptions import (InvalidDataSetError,  VehicleNotFoundError,
                     VehicleAlreadyBookedError, VehicleNotAvailableOnDateError,
                     BookingError, BookingDoesNotExistError, BookingAlreadyCancelledError,
-                    DatasetNotFoundError)
+                    DatasetNotFoundError, TestDriveError)
+from mbio.geo.exceptions import NotAPolygonError
 
 class TestDrive(object):
 
@@ -67,16 +68,18 @@ class TestDrive(object):
                     return dealer
         return None
 
-    def get_dealers_in_polugon_with_vehicle(self, coord_pair, model=None, fuel=None,
+    def get_dealers_in_polygon_with_vehicle(self, coord_pair, model=None, fuel=None,
                                         transmission=None):
-
         res = []
         polygon = [Coordinate(*lat_lon_pair) for lat_lon_pair in coord_pair]
         for dealer in self._dataset['dealers']:
             if self._dealer_has_vehicle(dealer, model, fuel, transmission):
                 dealer_coord = Coordinate(dealer['latitude'], dealer['longitude'])
-                if dealer_coord.is_inside_polygon(polygon):
-                    res.append(dealer)
+                try:
+                    if dealer_coord.is_inside_polygon(polygon):
+                        res.append(dealer)
+                except NotAPolygonError as e:
+                    raise TestDriveError(str(e))
         return res
 
 
