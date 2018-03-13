@@ -1,6 +1,6 @@
 """API endpoints."""
-
 class Endpoint(object):
+
     API_PREFIX = '/api/'
     VEHICLES = API_PREFIX + 'vehicles/'  # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ
 
