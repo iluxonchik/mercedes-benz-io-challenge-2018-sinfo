@@ -61,13 +61,9 @@ class Server(BaseHTTPRequestHandler):
         super(Server, self).__init__(*args, **kwargs)
 
     def _init_td_if_needed(self):
+        # propagate exception
         if Server.td is None:
-            try:
-                Server.td = TestDrive('./tests/resources/dataset_full.json')
-            except Exception as e:
-                print('[!!!] Fatal error occured. The application will end.')
-                print('\t{}'.format(str(e)))
-                sys.exit(-1)
+            Server.td = TestDrive(Server.DATASET_PATH)
 
     @handle_expcetions
     def do_GET(self):
@@ -116,7 +112,7 @@ class Server(BaseHTTPRequestHandler):
         if curr_method is Server.METHOD_PUT:
             return self._validate_is_put_only(endpoint)
 
-        return True
+        return False
 
     def _validate_is_get_only(self, endpoint):
         if endpoint not in Server.METHOD_ENDPOINTS[Server.METHOD_GET]:
@@ -241,7 +237,7 @@ class Server(BaseHTTPRequestHandler):
         try:
             pickup_date_dt_obj = isoformat_to_datetime(pickup_date)
         except ValueError:
-            err = self._build_error_dict('{} is not a valid ISO date format')
+            err = self._build_error_dict('{} is not a valid ISO date format'.format(pickup_date))
             self._respond_json(err, self.HTTP_BAD_REQUEST)
             return
 
