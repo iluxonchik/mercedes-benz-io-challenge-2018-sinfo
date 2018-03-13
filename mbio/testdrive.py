@@ -120,7 +120,7 @@ class TestDrive(object):
 
         # check if booking was already cancelled
         if 'cancelledAt' in booking:
-            msg = 'Booking with id {} is has already been cancelled'
+            msg = 'Booking with id {} has already been cancelled'.format(booking_id)
             raise BookingAlreadyCancelledError(msg)
 
         booking['cancelledAt'] = datetime.datetime.today().isoformat()
