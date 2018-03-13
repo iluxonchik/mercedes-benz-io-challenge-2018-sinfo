@@ -1,0 +1,80 @@
+{
+    "dealers": [
+        {
+            "id": "bbcdbbad-5d0b-45ef-90ac-3581b997e063",
+            "name": "MB Lisboa",
+            "latitude": 38.746721,
+            "longitude": -9.229837,
+            "closed": [
+                "sunday",
+                "monday"
+            ],
+            "vehicles": [
+                {
+                    "id": "778a04fd-0a6a-4dc7-92bb-a7517608efc2",
+                    "model": "A",
+                    "fuel": "ELECTRIC",
+                    "transmission": "AUTO",
+                    "availability": {
+                        "tuesday": [
+                            "1000",
+                            "1030"
+                        ],
+                        "wednesday": [
+                            "1000",
+                            "1030"
+                        ]
+                    }
+                },
+                {
+                    "id": "893d97bf-5a9d-4926-ace3-39ad0585c912",
+                    "model": "AMG",
+                    "fuel": "ELECTRIC",
+                    "transmission": "AUTO",
+                    "availability": {
+                        "tuesday": [
+                            "1000",
+                            "1030"
+                        ],
+                        "wednesday": [
+                            "1000",
+                            "1030"
+                        ]
+                    }
+                },
+                {
+                    "id": "44a36bfa-ec8f-4448-b4c2-809203bdcb9e",
+                    "model": "E",
+                    "fuel": "GASOLINE",
+                    "transmission": "MANUAL",
+                    "availability": {
+                        "tuesday": [
+                            "1000",
+                            "1030"
+                        ],
+                        "wednesday": [
+                            "1000",
+                            "1030"
+                        ]
+                    }
+                },
+                {
+                    "id": "d723b0bd-8eb0-4826-bf5d-44754005d174",
+                    "model": "AMG",
+                    "fuel": "GASOLINE",
+                    "transmission": "AUTO",
+                    "availability": {
+                        "tuesday": [
+                            "1000",
+                            "1030"
+                        ],
+                        "wednesday": [
+                            "1000",
+                            "1030"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
