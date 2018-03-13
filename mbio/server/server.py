@@ -7,6 +7,7 @@ import logging
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler
 
+from mbio.server.endpoint import Endpoint
 from mbio.testdrive import TestDrive
 from mbio.server.decorators import handle_expcetions
 from mbio.date.utils import isoformat_to_datetime
@@ -17,17 +18,6 @@ from mbio.exceptions import (VehicleNotFoundError, VehicleNotAvailableOnDateErro
 
 logging.basicConfig(level=logging.DEBUG)
 
-API_PREFIX = '/api/'
-VEHICLES = API_PREFIX + 'vehicles/'  # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ
-
-DEALERS_CLOSEST_LIST = API_PREFIX + 'dealers/' # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ?latitude=LLL?longitude=OOO
-DEALER_CLOSEST = API_PREFIX + 'dealers/closest/' # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ?latitude=LLL?longitude=OOO
-DEALERS_IN_POLYGON = API_PREFIX + 'dealers/polygon/'
-
-BOOKINGS_CREATE = API_PREFIX + 'bookings/create/' # {first_name, last_name, vehicle_id, pickup_date}
-BOOKINGS_CANCEL = API_PREFIX + 'bookings/cancel/' # {booking_id, reason}
-
-# HTTPRequestHandler class
 class Server(BaseHTTPRequestHandler):
 
     DATASET_PATH = None
@@ -40,9 +30,11 @@ class Server(BaseHTTPRequestHandler):
     METHOD_PUT = 'PUT'
 
     METHOD_ENDPOINTS = {
-        METHOD_GET: [VEHICLES, DEALER_CLOSEST, DEALERS_CLOSEST_LIST, DEALERS_IN_POLYGON],
-        METHOD_POST: [BOOKINGS_CREATE],
-        METHOD_PUT: [BOOKINGS_CANCEL],
+        METHOD_GET: [Endpoint.VEHICLES, Endpoint.DEALER_CLOSEST,
+                     Endpoint.DEALERS_CLOSEST_LIST,
+                     Endpoint.DEALERS_IN_POLYGON],
+        METHOD_POST: [Endpoint.BOOKINGS_CREATE],
+        METHOD_PUT: [Endpoint.BOOKINGS_CANCEL],
     }
 
 
@@ -56,14 +48,14 @@ class Server(BaseHTTPRequestHandler):
         # away, beofore running any other code in Server's __init__.
         # https://github.com/python/cpython/blob/master/Lib/socketserver.py#L695
         self.RES_FUNC = {
-            VEHICLES: self.get_vehicles,
+            Endpoint.VEHICLES: self.get_vehicles,
 
-            DEALERS_CLOSEST_LIST: self.get_closest_dealers_list,
-            DEALER_CLOSEST: self.get_closest_dealer,
-            DEALERS_IN_POLYGON: None,
+            Endpoint.DEALERS_CLOSEST_LIST: self.get_closest_dealers_list,
+            Endpoint.DEALER_CLOSEST: self.get_closest_dealer,
+            Endpoint.DEALERS_IN_POLYGON: None,
 
-            BOOKINGS_CREATE: self.create_booking,
-            BOOKINGS_CANCEL: self.cancel_booking,
+            Endpoint.BOOKINGS_CREATE: self.create_booking,
+            Endpoint.BOOKINGS_CANCEL: self.cancel_booking,
         }
         self._init_td_if_needed()
         super(Server, self).__init__(*args, **kwargs)
