@@ -15,7 +15,11 @@ def run():
     httpd = HTTPServer(server_address, Server)
     print('Server is running!')
 
-    httpd.serve_forever()
+    try:
+        httpd.serve_forever()
+    except Exception as e:
+        print('[!!!] Fatal error occured. The application will end.')
+        print('\t{}'.format(str(e)))
 
 if __name__=='__main__':
     run()
