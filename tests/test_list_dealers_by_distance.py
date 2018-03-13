@@ -217,3 +217,53 @@ class TestListDealersByDistance(unittest.TestCase):
             self.LOC_2[1])
         self.assertEqual(expected, obtained, 'Wrong closest dealer '
                                              'returned.')
+
+    def test_get_dealers_in_polygon(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        portugal = [
+                [42.203891, -9.525033],
+                [36.800254, -9.349252],
+                [37.203849, -5.899545],
+                [42.268963, -6.031381],
+        ]
+        obtained = td.get_dealers_in_polugon_with_vehicle(portugal)
+        expected = td._dataset['dealers']
+        self.assertCountEqual(expected, obtained)
+
+    def test_dealers_in_algarve_only(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        algarve = [
+                [37.401249, -9.025150],
+                [37.431196, -7.463079],
+                [36.929082, -8.982059],
+                [37.028052, -7.290712],
+
+        ]
+        obtained = td.get_dealers_in_polugon_with_vehicle(algarve)
+        expected = [td._dataset['dealers'][0]]
+        self.assertCountEqual(expected, obtained)
+
+    def test_dealers_in_algarve_only(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        algarve = [
+                [37.401249, -9.025150],
+                [37.431196, -7.463079],
+                [36.929082, -8.982059],
+                [37.028052, -7.290712],
+
+        ]
+        obtained = td.get_dealers_in_polugon_with_vehicle(algarve)
+        expected = [td._dataset['dealers'][0]]
+        self.assertCountEqual(expected, obtained)
+
+    def test_get_dealers_in_portugal_specific_vehicle(self):
+        td = TestDrive(dataset='./tests/resources/dataset_full.json')
+        portugal = [
+                [42.203891, -9.525033],
+                [36.800254, -9.349252],
+                [37.203849, -5.899545],
+                [42.268963, -6.031381],
+        ]
+        obtained = td.get_dealers_in_polugon_with_vehicle(portugal, model='a', fuel='gasoline', transmission='manual')
+        expected = [td._dataset['dealers'][2]]
+        self.assertCountEqual(expected, obtained)
