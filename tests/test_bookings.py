@@ -123,7 +123,7 @@ class BookingsTestCase(unittest.TestCase):
         td = TestDrive(dataset='./tests/resources/dataset_full.json')
         vehicle_id = '136fbb51-8a06-42fd-b839-c01ab87e2c6c'
         # reservation for April 9th at 10:00 (Tuesday)
-        pickup_date = datetime.datetime(2019, 4, 9, 10, 00)
+        pickup_date = datetime.datetime(2019, 4, 9, 10, 0)
         result = td.create_booking(first_name='Jayceon', last_name='Taylor',
                           vehicle_id=vehicle_id,
                           pickup_date=pickup_date)

@@ -9,24 +9,35 @@ from http.server import BaseHTTPRequestHandler
 
 from mbio.testdrive import TestDrive
 from mbio.server.decorators import handle_expcetions
+from mbio.date.utils import isoformat_to_datetime
+
+from mbio.exceptions import (VehicleNotFoundError, VehicleNotAvailableOnDateError,
+                        VehicleAlreadyBookedError, BookingError)
 
 logging.basicConfig(level=logging.DEBUG)
 
 API_PREFIX = '/api/'
-VEHICLES = API_PREFIX + 'vehicles'  # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ
+VEHICLES = API_PREFIX + 'vehicles/'  # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ
 
-DEALERS_CLOSEST_LIST = API_PREFIX + 'dealers' # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ?latitude=LLL?longitude=OOO
-DEALER_CLOSEST = API_PREFIX + 'dealers/closest' # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ?latitude=LLL?longitude=OOO
-DEALERS_IN_POLYGON = API_PREFIX + 'dealers/polygon'
+DEALERS_CLOSEST_LIST = API_PREFIX + 'dealers/' # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ?latitude=LLL?longitude=OOO
+DEALER_CLOSEST = API_PREFIX + 'dealers/closest/' # ?dealer=AAA?model=XXX?fuel=YYY?transmission=ZZZ?latitude=LLL?longitude=OOO
+DEALERS_IN_POLYGON = API_PREFIX + 'dealers/polygon/'
 
-BOOKINGS_CREATE = API_PREFIX + '/bookings/create' # {first_name, last_name, vehicle_id, pickup_date}
-BOOKINGS_CANCEL = API_PREFIX + '/booking/cancel' # {booking_id, reason}
+BOOKINGS_CREATE = API_PREFIX + 'bookings/create/' # {first_name, last_name, vehicle_id, pickup_date}
+BOOKINGS_CANCEL = API_PREFIX + 'booking/cancel/' # {booking_id, reason}
+
+
+
 
 # HTTPRequestHandler class
 class Server(BaseHTTPRequestHandler):
 
     DATASET_PATH = None
     HTTP_OK = 200
+    HTTP_OK_CREATED = 201
+    HTTP_BAD_REQUEST = 400
+
+    td = None
 
     def __init__(self, *args, **kwargs):
         # NOTE: do all of the setup and then call the super's __init__.
@@ -42,18 +53,20 @@ class Server(BaseHTTPRequestHandler):
             DEALER_CLOSEST: self.get_closest_dealer,
             DEALERS_IN_POLYGON: None,
 
-            BOOKINGS_CREATE: None,
+            BOOKINGS_CREATE: self.create_booking,
             BOOKINGS_CANCEL: None,
         }
-
-        try:
-            self._td = TestDrive(self.DATASET_PATH)
-        except Exception as e:
-            print('[!!!] Fatal error occured. The application will end.')
-            print('\t{}'.format(str(e)))
-            sys.exit(-1)
+        self._init_td_if_needed()
         super(Server, self).__init__(*args, **kwargs)
 
+    def _init_td_if_needed(self):
+        if Server.td is None:
+            try:
+                Server.td = TestDrive('./tests/resources/dataset_full.json')
+            except Exception as e:
+                print('[!!!] Fatal error occured. The application will end.')
+                print('\t{}'.format(str(e)))
+                sys.exit(-1)
 
     def do_GET(self):
         logging.debug(self.path)
@@ -62,6 +75,12 @@ class Server(BaseHTTPRequestHandler):
         json_content = self.headers['content']
 
         query_params, endpoint = self._parse_query_params_and_endpoint(self.path)
+
+        if endpoint in (BOOKINGS_CREATE, BOOKINGS_CANCEL):
+            err = self._build_error_dict('This endpoint only supports POST method.')
+            self._respond_json(err, self.HTTP_BAD_REQUEST)
+            return
+
         query_params['endpoint'] = endpoint
 
         dispatch_function = self.RES_FUNC.get(endpoint, self.invalid_endpoint_err)
@@ -70,23 +89,33 @@ class Server(BaseHTTPRequestHandler):
     def do_POST(self):
         logging.debug(self.path)
         logging.debug(self.headers['content'])
-        path = self.path
         json_content = self.rfile.read(int(self.headers['Content-Length']))
 
         logging.debug('Raw Content')
         logging.debug(json_content)
 
-        json_dict = json.loads(json_content)
+        query_params = json.loads(json_content)
         logging.debug('Loaded json: ')
-        logging.debug(json_dict)
+        logging.debug(query_params)
 
-        dispatch_function = self.RES_FUNC.get(self.path, self.invalid_endpoint_err)
-        dispatch_function(json_dict)
+        _, endpoint = self._parse_query_params_and_endpoint(self.path)
+
+        if endpoint in (VEHICLES, DEALER_CLOSEST, DEALERS_CLOSEST_LIST, DEALERS_IN_POLYGON):
+            err = self._build_error_dict('This endpoint only supports GET method.')
+            self._respond_json(err, self.HTTP_BAD_REQUEST)
+            return
+
+        query_params['endpoint'] = endpoint
+
+        dispatch_function = self.RES_FUNC.get(endpoint, self.invalid_endpoint_err)
+        dispatch_function(query_params)
+
 
 
     def invalid_endpoint_err(self, args):
         endpoint = args['endpoint']
-        self._send_UNAUTH_headers('\'{}\' is an invalid endpoint.'.format(endpoint))
+        err = self._build_error_dict('{} is not a valid endpint'.format(endpoint))
+        self._respond_json(err, self.HTTP_BAD_REQUEST)
 
     @handle_expcetions
     def get_vehicles(self, args):
@@ -95,7 +124,7 @@ class Server(BaseHTTPRequestHandler):
         fuel = args.get('fuel', None)
         transmission = args.get('transmission', None)
 
-        vehicles = self._td.get_vehicles_by_attributes(dealer=dealer, model=model, fuel=fuel, transmission=transmission)
+        vehicles = td.get_vehicles_by_attributes(dealer=dealer, model=model, fuel=fuel, transmission=transmission)
 
         ret_json = {'vehicles': vehicles}
         self._respond_json(ret_json, self.HTTP_OK)
@@ -115,7 +144,7 @@ class Server(BaseHTTPRequestHandler):
             self._respond_API_error(msg='latitude and longitude parameters are required')
             return
 
-        res = self._td.get_closest_dealers_with_vehicle(latitude, longitude, model, fuel, transmission)
+        res = Server.td.get_closest_dealers_with_vehicle(latitude, longitude, model, fuel, transmission)
 
         res_json = {'dealers': res}
         self._respond_json(res_json, self.HTTP_OK)
@@ -135,10 +164,39 @@ class Server(BaseHTTPRequestHandler):
             self._respond_API_error(msg='latitude and longitude parameters are required')
             return
 
-        res = self._td.get_closest_dealer_with_vehicle(latitude, longitude, model, fuel, transmission)
+        res = Server.td.get_closest_dealer_with_vehicle(latitude, longitude, model, fuel, transmission)
 
         res_json = {'dealer': res}
         self._respond_json(res_json, self.HTTP_OK)
+
+    def create_booking(self, args):
+        first_name = args.get('first_name', None)
+        last_name = args.get('last_name', None)
+        vehicle_id = args.get('vehicle_id', None)
+        pickup_date = args.get('pickup_date', None)
+
+        if None in (first_name, last_name, vehicle_id, pickup_date):
+            self._respond_API_error(msg='fist_name, last_name, vehicle_id and pickup_date parameters are ALL required')
+            return
+
+        # 1. Try and parse the date, if error, send err message
+        try:
+            pickup_date_dt_obj = isoformat_to_datetime(pickup_date)
+        except ValueError:
+            err = self._build_error_dict('{} is not a valid ISO date format')
+            self._respond_json(err, self.HTTP_BAD_REQUEST)
+            return
+
+        try:
+            res = Server.td.create_booking(first_name, last_name, vehicle_id, pickup_date_dt_obj)
+        except (VehicleNotFoundError, VehicleNotAvailableOnDateError,
+                                VehicleAlreadyBookedError, BookingError) as e:
+            err = self._build_error_dict(str(e))
+            self._respond_json(err, self.HTTP_BAD_REQUEST)
+            return
+
+        # Okay, everything went fine, so let's respond with the new booking
+        self._respond_json(res, self.HTTP_OK_CREATED)
 
     def _respond_API_error(self, msg):
         res_dict = self._build_error_dict(msg)
@@ -151,7 +209,10 @@ class Server(BaseHTTPRequestHandler):
         query_dict = parse_qs(parsed_url.query)
         for key, value in query_dict.items():
             res[key] = value[0]
-        return res, parsed_url.path
+        path = parsed_url.path
+        if not path.endswith('/'):
+            path = '{}/'.format(path)
+        return res, path
 
     @handle_expcetions
     def delete_profile_key(self, args):
