@@ -143,12 +143,12 @@ class TestDrive(object):
 
     def _create_booking_obj(self, first_name, last_name, vehicle_id, pickup_date):
         booking = {
-                    'id': uuid.uuid4(),
+                    'id': str(uuid.uuid4()),
                     'firstName': first_name,
                     'lastName': last_name,
                     'vehicleId': vehicle_id,
                     'pickupDate': pickup_date.isoformat(),
-                    'createdAt': datetime.datetime.today()
+                    'createdAt': datetime.datetime.today().isoformat()
         }
         return booking
 

@@ -50,12 +50,12 @@ class BookingsTestCase(unittest.TestCase):
         UUID_stub = MOCKED_UUIDS[0]
 
         expected_booking = {
-                    		"id": UUID_stub,
+                    		"id": str(UUID_stub),
                     		"firstName": "Jayceon",
                     		"lastName": "Taylor",
                     		"vehicleId": vehicle_id,
                     		"pickupDate": pickup_date.isoformat(),
-                    		"createdAt": MockedDateTime.MOCKED_DATE_VALUE
+                    		"createdAt": MockedDateTime.MOCKED_DATE_VALUE.isoformat()
                     }
         obtained_booking = result
         self.assertIsNotNone(obtained_booking, 'No booking returned')
@@ -132,12 +132,12 @@ class BookingsTestCase(unittest.TestCase):
         UUID_stub = MOCKED_UUIDS[0]
 
         expected_booking = {
-                    		"id": UUID_stub,
+                    		"id": str(UUID_stub),
                     		"firstName": "Jayceon",
                     		"lastName": "Taylor",
                     		"vehicleId": vehicle_id,
                     		"pickupDate": pickup_date.isoformat(),
-                    		"createdAt": MockedDateTime.MOCKED_DATE_VALUE
+                    		"createdAt": MockedDateTime.MOCKED_DATE_VALUE.isoformat()
                     }
         obtained_booking = result
         self.assertIsNotNone(obtained_booking, 'No booking returned')
