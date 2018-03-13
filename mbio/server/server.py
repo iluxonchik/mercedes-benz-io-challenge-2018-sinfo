@@ -16,7 +16,7 @@ from mbio.exceptions import (VehicleNotFoundError, VehicleNotAvailableOnDateErro
                         VehicleAlreadyBookedError, BookingError, BookingDoesNotExistError,
                         BookingAlreadyCancelledError, TestDriveError)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 
 class Server(BaseHTTPRequestHandler):
 
