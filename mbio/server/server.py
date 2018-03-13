@@ -14,7 +14,7 @@ from mbio.date.utils import isoformat_to_datetime
 
 from mbio.exceptions import (VehicleNotFoundError, VehicleNotAvailableOnDateError,
                         VehicleAlreadyBookedError, BookingError, BookingDoesNotExistError,
-                        BookingAlreadyCancelledError)
+                        BookingAlreadyCancelledError, TestDriveError)
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -31,9 +31,8 @@ class Server(BaseHTTPRequestHandler):
 
     METHOD_ENDPOINTS = {
         METHOD_GET: [Endpoint.VEHICLES, Endpoint.DEALER_CLOSEST,
-                     Endpoint.DEALERS_CLOSEST_LIST,
-                     Endpoint.DEALERS_IN_POLYGON],
-        METHOD_POST: [Endpoint.BOOKINGS_CREATE],
+                     Endpoint.DEALERS_CLOSEST_LIST,],
+        METHOD_POST: [Endpoint.BOOKINGS_CREATE, Endpoint.DEALERS_IN_POLYGON],
         METHOD_PUT: [Endpoint.BOOKINGS_CANCEL],
     }
 
@@ -52,7 +51,7 @@ class Server(BaseHTTPRequestHandler):
 
             Endpoint.DEALERS_CLOSEST_LIST: self.get_closest_dealers_list,
             Endpoint.DEALER_CLOSEST: self.get_closest_dealer,
-            Endpoint.DEALERS_IN_POLYGON: None,
+            Endpoint.DEALERS_IN_POLYGON: self.get_dealers_in_polygon,
 
             Endpoint.BOOKINGS_CREATE: self.create_booking,
             Endpoint.BOOKINGS_CANCEL: self.cancel_booking,
@@ -198,6 +197,39 @@ class Server(BaseHTTPRequestHandler):
             return
 
         res = Server.td.get_closest_dealers_with_vehicle(latitude, longitude, model, fuel, transmission)
+
+        res_json = {'dealers': res}
+        self._respond_json(res_json, self.HTTP_OK)
+
+    @handle_expcetions
+    def get_dealers_in_polygon(self, args):
+        model = args.get('model', None)
+        fuel = args.get('fuel', None)
+        transmission = args.get('transmission', None)
+        lat_longitude_list = args.get('coordinates', None)
+
+        if lat_longitude_list is None:
+            self._respond_API_error(msg='latitude/longitude "coordinates" pair list is required')
+            return
+
+        # this is also checked in the domain, this is here to avoid unecessary computations
+        if len(lat_longitude_list) < 3:
+            self._respond_API_error(msg='A polygon must have at least 3 latitude/longitude pairs.')
+            return
+
+        float_lat_lon = []
+        # this part is just here to be sure, that the values are floats, so
+        # even if you pass lat/lon pairs as strings, it'll work
+        for lat, lon in lat_longitude_list:
+            float_lat_lon.append([float(lat), float(lon)])
+
+        try:
+            res = Server.td.get_dealers_in_polygon_with_vehicle(float_lat_lon, model,
+                                                            fuel, transmission)
+        except TestDriveError as e:
+            err = self._build_error_dict(str(e))
+            self._respond_json(err, self.HTTP_BAD_REQUEST)
+            return
 
         res_json = {'dealers': res}
         self._respond_json(res_json, self.HTTP_OK)
