@@ -4,7 +4,7 @@ Mercedes-Benz IO 2018 challenge given at the SINFO conference.
 
 I've implemented all of the features, including the two marked as "improvement suggestions".
 
-# Running
+I ran and tested the application on Linux OS only: `4.14.13-1-ARCH #1 SMP PREEMPT Wed Jan 10 11:14:50 UTC 2018 x86_64 GNU/Linux`.
 
 ## Dependencies
 
@@ -26,10 +26,23 @@ Python 3.6.4 (default, Dec 23 2017, 19:07:07)
 
 ## Building/Running The application
 
-To run the application, simply execute the following command from the project's
+```
+usage: python3 run.py [-h] -f FILE [-p PORT]
+
+Mercedes-Benz IO TestDrive application. Developed as part of the MB IO
+challenge at SINFO 25.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Path to the file containing the JSON dataset.
+  -p PORT, --port PORT  Port on which to start the HTTP Server.
+
+```
+
+For example, run the application using the provided datase, simply execute the following command from the project's
 root directory:
 
-`python3 run.py <json_dataset_path> <port>`
+`python3 run.py -f ./tests/resources/dataset_full.json -p 8081`
 
 After that, you can start making requests to the endpoints at `http://localhost:<port>`
 
@@ -40,7 +53,7 @@ root directory:
 
 `python3 -m unittest discover tests`
 
-### Checking Coverage
+### Checking Test Coverage
 
 If you want to check the coverage, you can use the `coverage.py` tool.
 You can install it with `pip`:
