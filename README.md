@@ -53,6 +53,8 @@ root directory:
 
 `python3 -m unittest discover tests`
 
+Note: the tests at `test/test_server.py` use the port `1234`, so either make sure you have that port free or change it to some other value at the `test.test_server.RESTServerTestCase.SERVER_PORT`.
+
 ### Checking Test Coverage
 
 If you want to check the coverage, you can use the `coverage.py` tool.
@@ -126,7 +128,6 @@ tests/test_test_drive.py                    10      0   100%
 tests/test_utils.py                         15      0   100%
 ----------------------------------------------------------------------
 TOTAL                                     1321     46    97%
-
 ```
 
 # REST API
