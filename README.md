@@ -1,6 +1,8 @@
-# Mercedes Benz IO 2018 Challenge (SINFO)
+# Mercedes Benz IO 2018 Challenge (SINFO) - Winner Solution
 
 Mercedes-Benz IO 2018 challenge given at the SINFO conference.
+
+This is the winner solution of the competition.
 
 I've implemented all of the features, including the two marked as "improvement suggestions".
 
